@@ -1,15 +1,14 @@
-
 name: Playwright Tests - Multi-browser Headless
 
-
+# Trigger on push, PR, schedule, or manual
 on:
-  workflow_dispatch:  # manual run
+  workflow_dispatch:  # ✅ Allows manual run
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
   schedule:
-    
+    # Runs at 08:00 and 20:00 UTC every day
     - cron: '0 8,20 * * *'
 
 jobs:
