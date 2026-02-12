@@ -1,5 +1,5 @@
 
-name: Playwright Tests - Chrome Only
+name: Playwright Tests - Headless Chrome
 
 on:
   push:
@@ -12,21 +12,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout code
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: npm ci
 
+      # 4️⃣ Install Playwright browsers
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run login.spec.js on Desktop Chrome
+      # 5️⃣ Run Playwright tests on Desktop Chrome (headless by default)
+      - name: Run login.spec.js on Desktop Chrome (headless)
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           APP_URL: ${{ secrets.APP_URL }}
@@ -34,9 +39,10 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
           PROFILE_NAME: ${{ secrets.PROFILE_NAME }}
         run: |
-          echo "Running login.spec.js on Desktop Chrome"
+          echo "Running login.spec.js on Desktop Chrome (headless)"
           npx playwright test SmokeTests/login.spec.js --project="Desktop Chrome" --reporter=html --timeout=60000
 
+      # 6️⃣ Upload Playwright HTML report
       - name: Upload Playwright HTML report
         uses: actions/upload-artifact@v4
         with:
