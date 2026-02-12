@@ -1,4 +1,3 @@
-
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
@@ -7,9 +6,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   use: {
-    headless: true, // ✅ Headless for GitHub Actions
+    headless: true, // ✅ headless for CI
     viewport: { width: 1280, height: 720 },
     trace: 'on-first-retry',
+    baseURL: process.env.BASE_URL, // ✅ required for relative paths
   },
   projects: [
     {
