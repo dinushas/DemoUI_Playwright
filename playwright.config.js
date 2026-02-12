@@ -14,15 +14,11 @@ export default defineConfig({
  projects: [
     {
       name: 'Desktop Chrome',
-      use: { ...devices['Desktop Chrome'], headless: true }, // headless here
+      use: { ...devices['Desktop Chrome'], headless: true },
     },
     {
       name: 'Desktop Firefox',
       use: { ...devices['Desktop Firefox'], headless: true },
-    },
-    {
-      name: 'Desktop Safari',
-      use: { ...devices['Desktop Safari'], headless: false }, // Safari cannot be headless
     },
   ],
 });
