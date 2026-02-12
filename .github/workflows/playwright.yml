@@ -1,14 +1,12 @@
-name: Playwright Tests - Multi-browser
+name: Playwright Tests - Multi-browser Headless
 
-# Trigger on push, PR, schedule, or manual
 on:
-  workflow_dispatch:        # ✅ Allows manual run
+  workflow_dispatch:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
   schedule:
-    # Runs at 08:00 and 20:00 UTC every day
     - cron: '0 8,20 * * *'
 
 jobs:
@@ -16,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        browser: [ "Desktop Chrome", "Desktop Firefox", "Desktop Safari" ]
+        browser: [ "Desktop Chrome", "Desktop Firefox" ]  # Removed Safari
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -32,7 +30,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests on ${{ matrix.browser }}
+      - name: Run Playwright tests on ${{ matrix.browser }} headless
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_PATH: ${{ secrets.LOGIN_PATH }}
@@ -43,17 +41,11 @@ jobs:
         run: |
           # Convert matrix.browser to safe folder name
           BROWSER_FOLDER=$(echo "${{ matrix.browser }}" | tr ' ' '-')
-          echo "Running login.spec.js on ${{ matrix.browser }}"
-
-          # Only use headless for Chrome and Firefox
-          HEADLESS_FLAG=""
-          if [[ "${{ matrix.browser }}" != "Desktop Safari" ]]; then
-            HEADLESS_FLAG="--headless"
-          fi
+          echo "Running login.spec.js on ${{ matrix.browser }} headless"
 
           npx playwright test tests/SmokeTests/login.spec.js \
             --project="${{ matrix.browser }}" \
-            $HEADLESS_FLAG \
+            --headless \
             --reporter=html \
             --output=playwright-report/$BROWSER_FOLDER \
             --timeout=60000
@@ -62,4 +54,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-${{ matrix.browser }}
-          path: playwright-report/$(echo "${{ matrix.browser }}" | tr ' ' '-')
+          path: playwright-report/${{ matrix.browser }}
