@@ -3,7 +3,7 @@ import { Home } from '../PageObject/home';
 import { Login } from '../PageObject/login';
 import { CookieContainer } from '../PageObject/cookieContainer';
 import { Profile } from '../PageObject/profile';
-import { config } from '../../utils/env';
+import { config } from '../utils/env';
 
 test('Verify Login and Profile', async ({ page }) => {
   const home = new Home(page);
