@@ -7,7 +7,7 @@ import { Profile } from '../PageObject/profile';
 import dotenv from 'dotenv';
 import path from 'path';
 
-// ✅ Load .env only locally (not on CI)
+// Load .env only locally (not on CI)
 if (!process.env.CI) {
     const env = process.env.ENV || 'uat';
     dotenv.config({
@@ -15,7 +15,7 @@ if (!process.env.CI) {
     });
 }
 
-// ✅ Use environment variables (works locally and in CI)
+//  Use environment variables (works locally and in CI)
 const config = {
     baseURL: process.env.BASE_URL,
     appURL: process.env.APP_URL,
@@ -32,22 +32,22 @@ test('Verify Login and Profile', async ({ page }) => {
     const login = new Login(page);
     const profile = new Profile(page);
 
-    // 1️⃣ Go to the base URL
+    //  Go to the base URL
     await page.goto(`${config.baseURL}/how-it-works`);
 
-    // 2️⃣ Handle cookies
+    //  Handle cookies
     await cookie.cookieContainerIsVisible();
     await cookie.acceptAllCookies();
 
-    // 3️⃣ Click Sign In
+    //  Click Sign In
     await home.clickSignIn();
 
-    // 4️⃣ Login using environment variables
+    //  Login using environment variables
     await login.login(config.username, config.password);
 
-    // 5️⃣ Verify the user is on the correct profile URL
+    // Verify the user is on the correct profile URL
     await profile.verifyUrl(config.appURL);
 
-    // 6️⃣ Verify wardrobe name
+    //  Verify wardrobe name
     await profile.verifyWardrobeName(config.profileName);
 });
