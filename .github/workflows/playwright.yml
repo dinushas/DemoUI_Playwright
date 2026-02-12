@@ -1,4 +1,4 @@
-name: Playwright Tests - Multi-browser
+name: Playwright Tests - Multi-browser Headless
 
 on:
   workflow_dispatch:        # Manual run
@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        browser: [ "Desktop Chrome", "Desktop Firefox", "Desktop Safari" ]
+        browser: [ "Desktop Chrome", "Desktop Firefox" ]  # Safari removed
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -30,7 +30,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests on ${{ matrix.browser }}
+      - name: Run Playwright tests on ${{ matrix.browser }} headless
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_PATH: ${{ secrets.LOGIN_PATH }}
@@ -41,9 +41,9 @@ jobs:
         run: |
           # Convert matrix.browser to safe folder name
           BROWSER_FOLDER=$(echo "${{ matrix.browser }}" | tr ' ' '-')
-          echo "Running login.spec.js on ${{ matrix.browser }}"
+          echo "Running login.spec.js on ${{ matrix.browser }} headless"
 
-          # Run tests using playwright.config.js projects (headless/headed defined there)
+          # Run tests using playwright.config.js projects
           npx playwright test tests/SmokeTests/login.spec.js \
             --project="${{ matrix.browser }}" \
             --reporter=html \
