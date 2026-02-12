@@ -1,20 +1,20 @@
-name: Playwright Tests - Multi-browser Headless
+name: Playwright Tests - Multi-browser
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:        # Manual run
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
   schedule:
-    - cron: '0 8,20 * * *'
+    - cron: '0 8,20 * * *' # Runs at 08:00 and 20:00 UTC
 
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        browser: [ "Desktop Chrome", "Desktop Firefox" ]  # Removed Safari
+        browser: [ "Desktop Chrome", "Desktop Firefox", "Desktop Safari" ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -30,7 +30,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests on ${{ matrix.browser }} headless
+      - name: Run Playwright tests on ${{ matrix.browser }}
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_PATH: ${{ secrets.LOGIN_PATH }}
@@ -41,11 +41,11 @@ jobs:
         run: |
           # Convert matrix.browser to safe folder name
           BROWSER_FOLDER=$(echo "${{ matrix.browser }}" | tr ' ' '-')
-          echo "Running login.spec.js on ${{ matrix.browser }} headless"
+          echo "Running login.spec.js on ${{ matrix.browser }}"
 
+          # Run tests using playwright.config.js projects (headless/headed defined there)
           npx playwright test tests/SmokeTests/login.spec.js \
             --project="${{ matrix.browser }}" \
-            --headless \
             --reporter=html \
             --output=playwright-report/$BROWSER_FOLDER \
             --timeout=60000
@@ -54,4 +54,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-${{ matrix.browser }}
-          path: playwright-report/${{ matrix.browser }}
+          path: playwright-report/$(echo "${{ matrix.browser }}" | tr ' ' '-')
