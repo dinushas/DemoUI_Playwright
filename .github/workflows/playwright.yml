@@ -1,14 +1,12 @@
 name: Playwright Tests - Multi-browser Headless
 
-
 on:
-  workflow_dispatch:        
+  workflow_dispatch:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
   schedule:
-    # Runs at 08:00 and 20:00 UTC every day
     - cron: '0 8,20 * * *'
 
 jobs:
@@ -45,17 +43,16 @@ jobs:
           BROWSER_FOLDER=$(echo "${{ matrix.browser }}" | tr ' ' '-')
           echo "Running login.spec.js on ${{ matrix.browser }} headless"
           
+          # Run tests in headless mode
           npx playwright test tests/SmokeTests/login.spec.js \
             --project="${{ matrix.browser }}" \
-            --headed=false \
+            --headless \
             --reporter=html \
             --output=playwright-report/$BROWSER_FOLDER \
             --timeout=60000
 
       - name: Upload Playwright report
-        run: |
-          BROWSER_FOLDER=$(echo "${{ matrix.browser }}" | tr ' ' '-')
-          echo "Uploading report for ${{ matrix.browser }}"
-          npx actions/upload-artifact@v4 \
-            --name playwright-report-$BROWSER_FOLDER \
-            --path playwright-report/$BROWSER_FOLDER
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: playwright-report/${{ matrix.browser }}
