@@ -1,13 +1,15 @@
-name: Playwright Tests - Multi-browser
 
-# Trigger on push, PR, or scheduled cron
+name: Playwright Tests - Multi-browser Headless
+
+
 on:
+  workflow_dispatch:  # manual run
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
   schedule:
-    # Runs at 8 AM and 8 PM UTC every day
+    
     - cron: '0 8,20 * * *'
 
 jobs:
@@ -31,19 +33,25 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run tests on ${{ matrix.browser }}
+      - name: Run Playwright tests on ${{ matrix.browser }} headless
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN_PATH: ${{ secrets.LOGIN_PATH }}
           APP_URL: ${{ secrets.APP_URL }}
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
           PROFILE_NAME: ${{ secrets.PROFILE_NAME }}
         run: |
-          echo "Running login.spec.js on ${{ matrix.browser }}"
-          npx playwright test tests/SmokeTests/login.spec.js --project="${{ matrix.browser }}" --reporter=html --output=playwright-report/${{ matrix.browser }} --timeout=60000
+          echo "Running login.spec.js on ${{ matrix.browser }} headless"
+          npx playwright test tests/SmokeTests/login.spec.js \
+            --project="${{ matrix.browser }}" \
+            --headed=false \
+            --reporter=html \
+            --output=playwright-report/${{ matrix.browser | replace(' ', '-') }} \
+            --timeout=60000
 
       - name: Upload Playwright report for ${{ matrix.browser }}
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ matrix.browser }}
-          path: playwright-report/${{ matrix.browser }}
+          name: playwright-report-${{ matrix.browser | replace(' ', '-') }}
+          path: playwright-report/${{ matrix.browser | replace(' ', '-') }}
