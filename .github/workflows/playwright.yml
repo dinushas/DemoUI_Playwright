@@ -1,4 +1,4 @@
-name: Playwright Tests - Headless Chrome
+name: Playwright Tests - Multi-browser
 
 on:
   push:
@@ -25,7 +25,8 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run login.spec.js on Desktop Chrome (headless)
+      # ------------------ Desktop Chrome ------------------
+      - name: Run login.spec.js on Desktop Chrome
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           APP_URL: ${{ secrets.APP_URL }}
@@ -33,11 +34,44 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
           PROFILE_NAME: ${{ secrets.PROFILE_NAME }}
         run: |
-          echo "Running login.spec.js on Desktop Chrome (headless)"
+          echo "Running login.spec.js on Desktop Chrome"
           npx playwright test tests/SmokeTests/login.spec.js --project="Desktop Chrome" --reporter=html --timeout=60000
-
-      - name: Upload Playwright HTML report
+      - name: Upload Chrome report
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-chrome
+          path: playwright-report
+
+      # ------------------ Desktop Firefox ------------------
+      - name: Run login.spec.js on Desktop Firefox
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          APP_URL: ${{ secrets.APP_URL }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          PROFILE_NAME: ${{ secrets.PROFILE_NAME }}
+        run: |
+          echo "Running login.spec.js on Desktop Firefox"
+          npx playwright test tests/SmokeTests/login.spec.js --project="Desktop Firefox" --reporter=html --timeout=60000
+      - name: Upload Firefox report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-firefox
+          path: playwright-report
+
+      # ------------------ Desktop Safari ------------------
+      - name: Run login.spec.js on Desktop Safari
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          APP_URL: ${{ secrets.APP_URL }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          PROFILE_NAME: ${{ secrets.PROFILE_NAME }}
+        run: |
+          echo "Running login.spec.js on Desktop Safari"
+          npx playwright test tests/SmokeTests/login.spec.js --project="Desktop Safari" --reporter=html --timeout=60000
+      - name: Upload Safari report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-safari
           path: playwright-report
