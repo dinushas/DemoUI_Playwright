@@ -1,8 +1,8 @@
 name: Playwright Tests - Multi-browser Headless
 
-# Trigger on push, PR, schedule, or manual
+
 on:
-  workflow_dispatch:  # ✅ Allows manual run
+  workflow_dispatch:        
   push:
     branches: [ main ]
   pull_request:
@@ -41,16 +41,21 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
           PROFILE_NAME: ${{ secrets.PROFILE_NAME }}
         run: |
+          # Convert matrix.browser to safe folder name
+          BROWSER_FOLDER=$(echo "${{ matrix.browser }}" | tr ' ' '-')
           echo "Running login.spec.js on ${{ matrix.browser }} headless"
+          
           npx playwright test tests/SmokeTests/login.spec.js \
             --project="${{ matrix.browser }}" \
             --headed=false \
             --reporter=html \
-            --output=playwright-report/${{ matrix.browser | replace(' ', '-') }} \
+            --output=playwright-report/$BROWSER_FOLDER \
             --timeout=60000
 
-      - name: Upload Playwright report for ${{ matrix.browser }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report-${{ matrix.browser | replace(' ', '-') }}
-          path: playwright-report/${{ matrix.browser | replace(' ', '-') }}
+      - name: Upload Playwright report
+        run: |
+          BROWSER_FOLDER=$(echo "${{ matrix.browser }}" | tr ' ' '-')
+          echo "Uploading report for ${{ matrix.browser }}"
+          npx actions/upload-artifact@v4 \
+            --name playwright-report-$BROWSER_FOLDER \
+            --path playwright-report/$BROWSER_FOLDER
