@@ -1,10 +1,14 @@
 name: Playwright Tests - Multi-browser
 
+# Trigger on push, PR, or scheduled cron
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  schedule:
+    # Runs at 8 AM and 8 PM UTC every day
+    - cron: '0 8,20 * * *'
 
 jobs:
   test:
