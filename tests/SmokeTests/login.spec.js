@@ -12,7 +12,7 @@ test('Verify Login and Profile', async ({ page }) => {
   const login = new Login(page);
   const profile = new Profile(page);
 
-  // ✅ Use relative path, resolves via baseURL
+  // Use  baseURL
   await page.goto('/how-it-works');
 
   // Handle cookies
@@ -26,7 +26,6 @@ test('Verify Login and Profile', async ({ page }) => {
   await login.login(config.username, config.password);
 
   // Verify user is on correct profile URL
-  // ✅ Use regex to handle username masking (Dinusha → ***)
   await profile.verifyUrl(/\/profile\/.*\/pieces/);
 
   // Verify wardrobe name
