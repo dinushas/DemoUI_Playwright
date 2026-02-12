@@ -1,4 +1,4 @@
-name: Playwright Tests - Multi-browser Headless
+name: Playwright Tests - Multi-browser
 
 # Trigger on push, PR, schedule, or manual
 on:
@@ -32,7 +32,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests on ${{ matrix.browser }} headless
+      - name: Run Playwright tests on ${{ matrix.browser }}
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_PATH: ${{ secrets.LOGIN_PATH }}
@@ -43,12 +43,17 @@ jobs:
         run: |
           # Convert matrix.browser to safe folder name
           BROWSER_FOLDER=$(echo "${{ matrix.browser }}" | tr ' ' '-')
-          echo "Running login.spec.js on ${{ matrix.browser }} headless"
-          
-          # Run tests in headless mode
+          echo "Running login.spec.js on ${{ matrix.browser }}"
+
+          # Only use headless for Chrome and Firefox
+          HEADLESS_FLAG=""
+          if [[ "${{ matrix.browser }}" != "Desktop Safari" ]]; then
+            HEADLESS_FLAG="--headless"
+          fi
+
           npx playwright test tests/SmokeTests/login.spec.js \
             --project="${{ matrix.browser }}" \
-            --headless \
+            $HEADLESS_FLAG \
             --reporter=html \
             --output=playwright-report/$BROWSER_FOLDER \
             --timeout=60000
@@ -57,4 +62,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-${{ matrix.browser }}
-          path: playwright-report/${{ matrix.browser }}
+          path: playwright-report/$(echo "${{ matrix.browser }}" | tr ' ' '-')
