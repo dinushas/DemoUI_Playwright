@@ -1,20 +1,20 @@
 name: Playwright Tests - Multi-browser Headless
 
 on:
-  workflow_dispatch:        # Manual run
+  workflow_dispatch:        
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
   schedule:
-    - cron: '0 8,20 * * *' # Runs at 08:00 and 20:00 UTC
+    - cron: '0 8,20 * * *'
 
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        browser: [ "Desktop Chrome", "Desktop Firefox" ]  # Safari removed
+        browser: [ "Desktop Chrome", "Desktop Firefox" ]  
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
