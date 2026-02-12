@@ -1,53 +1,38 @@
-
 import { test } from '@playwright/test';
 import { Home } from '../PageObject/home';
 import { Login } from '../PageObject/login';
 import { CookieContainer } from '../PageObject/cookieContainer';
 import { Profile } from '../PageObject/profile';
-import dotenv from 'dotenv';
-import path from 'path';
-
-// Load .env only locally (not on CI)
-if (!process.env.CI) {
-    const env = process.env.ENV || 'uat';
-    dotenv.config({
-        path: path.resolve(process.cwd(), `.env.${env}`)
-    });
-}
-
-//  Use environment variables (works locally and in CI)
-const config = {
-    baseURL: process.env.BASE_URL,
-    appURL: process.env.APP_URL,
-    username: process.env.USERNAME,
-    password: process.env.PASSWORD,
-    profileName: process.env.PROFILE_NAME
-};
+import { config } from '../../utils/env';
 
 test('Verify Login and Profile', async ({ page }) => {
+  const home = new Home(page);
+  const cookie = new CookieContainer(page);
+  const login = new Login(page);
+  const profile = new Profile(page);
 
-    // Initialize page objects
-    const home = new Home(page);
-    const cookie = new CookieContainer(page);
-    const login = new Login(page);
-    const profile = new Profile(page);
+  // Go to base URL
+  await page.goto('/how-it-works');
 
-    //  Go to the base URL
-    await page.goto(`${config.baseURL}/how-it-works`);
+  // Handle cookies
+  await cookie.cookieContainerIsVisible();
+  await cookie.acceptAllCookies();
 
-    //  Handle cookies
-    await cookie.cookieContainerIsVisible();
-    await cookie.acceptAllCookies();
+  // Click Sign In
+  await home.clickSignIn();
 
-    //  Click Sign In
-    await home.clickSignIn();
+  // Login using GitHub Secrets or local .env
+  await login.login(config.username, config.password);
 
-    //  Login using environment variables
-    await login.login(config.username, config.password);
+  // Verify user is on correct profile URL
+  // Use regex to avoid username masking issues on CI
+  await profile.verifyUrl(new RegExp('/profile/.*/pieces'));
 
-    // Verify the user is on the correct profile URL
-    await profile.verifyUrl(config.appURL);
+  // Verify wardrobe name
+  await profile.verifyWardrobeName(config.profileName);
 
-    //  Verify wardrobe name
-    await profile.verifyWardrobeName(config.profileName);
+  // Debug output
+  console.log('Username:', config.username);
+  console.log('Profile Name:', config.profileName);
+  console.log('App URL:', config.appURL);
 });
