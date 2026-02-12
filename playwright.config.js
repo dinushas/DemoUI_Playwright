@@ -11,18 +11,18 @@ export default defineConfig({
     trace: 'on-first-retry',
     baseURL: process.env.BASE_URL, // ✅ required for relative paths
   },
-  projects: [
+ projects: [
     {
       name: 'Desktop Chrome',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], headless: true }, // headless here
     },
     {
       name: 'Desktop Firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: { ...devices['Desktop Firefox'], headless: true },
     },
     {
       name: 'Desktop Safari',
-      use: { ...devices['Desktop Safari'] },
+      use: { ...devices['Desktop Safari'], headless: false }, // Safari cannot be headless
     },
   ],
 });
