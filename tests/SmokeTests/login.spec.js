@@ -7,12 +7,15 @@ import { Profile } from '../PageObject/profile';
 import dotenv from 'dotenv';
 import path from 'path';
 
-// Load environment variables dynamically
-const env = process.env.ENV || 'uat';
-dotenv.config({
-    path: path.resolve(process.cwd(), `.env.${env}`)
-});
+// ✅ Load .env only locally (not on CI)
+if (!process.env.CI) {
+    const env = process.env.ENV || 'uat';
+    dotenv.config({
+        path: path.resolve(process.cwd(), `.env.${env}`)
+    });
+}
 
+// ✅ Use environment variables (works locally and in CI)
 const config = {
     baseURL: process.env.BASE_URL,
     appURL: process.env.APP_URL,
@@ -23,13 +26,14 @@ const config = {
 
 test('Verify Login and Profile', async ({ page }) => {
 
+    // Initialize page objects
     const home = new Home(page);
     const cookie = new CookieContainer(page);
     const login = new Login(page);
     const profile = new Profile(page);
 
-    // 1️⃣ Go to base URL
-    await page.goto('/how-it-works'); // Uses baseURL from config
+    // 1️⃣ Go to the base URL
+    await page.goto(`${config.baseURL}/how-it-works`);
 
     // 2️⃣ Handle cookies
     await cookie.cookieContainerIsVisible();
@@ -38,10 +42,10 @@ test('Verify Login and Profile', async ({ page }) => {
     // 3️⃣ Click Sign In
     await home.clickSignIn();
 
-    // 4️⃣ Login using env credentials
+    // 4️⃣ Login using environment variables
     await login.login(config.username, config.password);
 
-    // 5️⃣ Verify user is on correct profile URL
+    // 5️⃣ Verify the user is on the correct profile URL
     await profile.verifyUrl(config.appURL);
 
     // 6️⃣ Verify wardrobe name
