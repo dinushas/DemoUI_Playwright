@@ -34,7 +34,7 @@ jobs:
           PROFILE_NAME: ${{ secrets.PROFILE_NAME }}
         run: |
           echo "Running login.spec.js on Desktop Chrome (headless)"
-          npx playwright test SmokeTests/login.spec.js --project="Desktop Chrome" --reporter=html --timeout=60000
+          npx playwright test tests/SmokeTests/login.spec.js --project="Desktop Chrome" --reporter=html --timeout=60000
 
       - name: Upload Playwright HTML report
         uses: actions/upload-artifact@v4
