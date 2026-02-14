@@ -23,100 +23,100 @@ The framework is designed to showcase automation best practices suitable for rea
 
 **Features**
 
-Cross-browser testing (Chromium, Firefox, WebKit)
+- Cross-browser testing (Chromium, Firefox, WebKit)
 
-Parallel test execution
+- Parallel test execution
 
-Headless and headed execution
+- Headless and headed execution
 
-Automatic screenshots and traces on failure
+- Automatic screenshots and traces on failure
 
-HTML test reporting
+- HTML test reporting
 
-CI execution with GitHub Actions
+- CI execution with GitHub Actions
 
-Scalable and maintainable test structure
+- Scalable and maintainable test structure
 
 **Prerequisites**
 
-Ensure the following are installed:
+- Ensure the following are installed:
 
-Node.js (v16 or higher)
+- Node.js (v16 or higher)
 
-npm
+- npm
 
-Git
+- Git
 
 **Installation**
 
-Clone the repository:
+- Clone the repository:
 
-git clone https://github.com/dinushas/DemoUI_Playwright.git
-cd DemoUI_Playwright
+- git clone https://github.com/dinushas/DemoUI_Playwright.git
+- cd DemoUI_Playwright
 
 **Install dependencies:**
 
-npm install
+- npm install
 
 **Install Playwright browsers:**
 
-npx playwright install
+- npx playwright install
 
 
 **Running Tests**
 
-npx playwright test
+- npx playwright test
 
 
 **Run tests in headed mode:**
 
-npx playwright test --headed
+- npx playwright test --headed
 
 **Run a specific test file:**
 
-npx playwright test tests/example.spec.js
+- npx playwright test tests/example.spec.js
 
 
 **Test Reports**
 
-After test execution, open the Playwright HTML report:
+- After test execution, open the Playwright HTML report:
 
-npx playwright show-report
+- npx playwright show-report
 
 
 **Continuous Integration (GitHub Actions)**
 
-This project uses GitHub Actions to automatically execute tests on:
+- This project uses GitHub Actions to automatically execute tests on:
 
-Every push to the main branch
+- Every push to the main branch
 
-Every pull request
+- Every pull request
 
-The CI workflow performs the following steps:
+- The CI workflow performs the following steps:
 
-Checks out the repository
+- Checks out the repository
 
-Installs Node.js dependencies
+- Installs Node.js dependencies
 
-Installs Playwright browsers
+- Installs Playwright browsers
 
-Runs all automated tests
+- Runs all automated tests
 
-Uploads the Playwright HTML report as an artifact
+- Uploads the Playwright HTML report as an artifact
 
-You can view test execution results in the Actions tab of the repository.
+- You can view test execution results in the Actions tab of the repository.
 
 **Purpose of This Project**
 
-This project is created to:
+- This project is created to:
 
-Demonstrate Playwright UI automation framework design
+- Demonstrate Playwright UI automation framework design
 
-Showcase CI/CD integration for automation testing
+- Showcase CI/CD integration for automation testing
 
-Serve as a portfolio project for QA automation roles
+- Serve as a portfolio project for QA automation roles
 
-Practice modern automation engineering techniques
+- Practice modern automation engineering techniques
 
 
 
