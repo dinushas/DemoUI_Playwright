@@ -18,13 +18,8 @@ HTML Reporting
 
 **Project Structure**
 
-DemoUI_Playwright/
-│
-├── tests/                     # Test specifications
-├── .github/workflows/         # GitHub Actions CI configuration
-├── playwright.config.js       # Playwright configuration
-├── package.json               # Dependencies and scripts
-└── README.md
+<img width="344" height="120" alt="image" src="https://github.com/user-attachments/assets/e047f13d-552c-4f55-bf48-e759c67f91c8" />
+
 
 **Features**
 
