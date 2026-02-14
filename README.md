@@ -6,15 +6,15 @@ The framework is designed to showcase automation best practices suitable for rea
 
 **Tech Stack**
 
-Playwright
+- Playwright
 
-JavaScript (Node.js)
+- JavaScript (Node.js)
 
-Playwright Test Runner
+- Playwright Test Runner
 
-GitHub Actions (CI/CD)
+- GitHub Actions (CI/CD)
 
-HTML Reporting
+- HTML Reporting
 
 **Project Structure**
 
