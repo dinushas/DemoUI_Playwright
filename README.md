@@ -120,4 +120,158 @@ The framework is designed to showcase automation best practices suitable for rea
 
 
 
+Login Data Driven 
+
+import { test, expect } from '@playwright/test';
+import { LoginPage } from '../pages/LoginPage';
+import { MyAccountPage } from '../pages/MyAccountPage';
+import { DataProvider } from '../utils/dataProvider';
+import { TestConfig } from '../test.config';
+import { HomePage } from '../pages/HomePage';
+
+
+//Load JSON test data logindata.json
+
+const jsonPath="testdata/logindata.json";
+const jsonTestData=DataProvider.getTestDataFromJson(jsonPath);
+
+
+for(const data of jsonTestData)
+{
+   test(`Login Test with JSON Data: ${data.testName} @datadriven`, async({page})=>{
+
+        const config = new TestConfig(); // create instance
+        await page.goto(config.appUrl);    // getting appURL from test.config.ts file
+
+        const homePage = new HomePage(page);
+        await homePage.clickMyAccount();
+        await homePage.clickLogin();
+
+        const loginPage = new LoginPage(page);
+        await loginPage.login(data.email, data.password);
+
+        if(data.expected.toLowerCase()==='success')
+        {
+            const myAccountPage=new MyAccountPage(page);
+            const isLoggedIn=await myAccountPage.isMyAccountPageExists();
+            expect(isLoggedIn).toBeTruthy();
+
+        }
+        else{
+            const errorMessage=await loginPage.getloginErrorMessage();
+            //expect(errorMessage).toBe('Warning: No match for E-Mail Address and/or Password.');
+            expect(errorMessage).toContain('Warning: No match');
+        }
+    })
+
+}
+
+
+
+//Load CSV test data logindata.json
+
+const csvPath = "testdata/logindata.csv";
+const csvTestData = DataProvider.getTestDataFromCsv(csvPath);
+
+
+for(const data of csvTestData)
+{
+   test(`Login Test with CSV Data: ${data.testName} @datadriven`, async({page})=>{
+
+        const config = new TestConfig(); // create instance
+        await page.goto(config.appUrl);    // getting appURL from test.config.ts file
+
+        const homePage = new HomePage(page);
+        await homePage.clickMyAccount();
+        await homePage.clickLogin();
+
+        const loginPage = new LoginPage(page);
+        await loginPage.login(data.email, data.password);
+
+        if(data.expected.toLowerCase()==='success')
+        {
+            const myAccountPage=new MyAccountPage(page);
+            const isLoggedIn=await myAccountPage.isMyAccountPageExists();
+            expect(isLoggedIn).toBeTruthy();
+
+        }
+        else{
+            const errorMessage=await loginPage.getloginErrorMessage();
+            //expect(errorMessage).toBe('Warning: No match for E-Mail Address and/or Password.');
+            expect(errorMessage).toContain('Warning: No match');    
+        }
+    })
+
+}
+
+
+
+
+utils -> DataPrivider
+
+import fs from 'fs';
+import { parse } from 'csv-parse/sync';
+
+export class DataProvider{
+
+static getTestDataFromJson(filePath:string)
+{
+    let data:any =JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    return data;
+}
+
+
+static getTestDataFromCsv(filePath:string)
+{
+     let data:any= parse(fs.readFileSync(filePath),{columns:true,skip_empty_lines:true})
+    return data;
+    }
+
+
+}
+
+
+TestData -> testdata/logindata.json
+
+[
+    {
+        "testName": "Valid login",
+        "email": "kelly@.com",
+        "password": "",
+        "expected": "success"
+    },
+
+    {
+        "testName": "Invalid Login",
+        "email": "kelly@.com",
+        "password": "",
+        "expected": "Failure"
+    }
+]
+
+
+test.config.js
+
+export class TestConfig{
+
+appURL = "https://naveenautomationlabs.com/opencart"
+
+//Valid login credentials
+email=" "
+password=" "
+
+//Production details
+productName= " "
+productQuantity=" "
+totalPrice=" "
+
+firstName='Kelly'
+lastName='Felder'
+
+
+
+}
+
+
+
 
