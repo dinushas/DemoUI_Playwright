@@ -272,6 +272,46 @@ lastName='Felder'
 
 }
 
+=========================================================================
+
+How to Read Data from a File (JSON example)
+
+{
+  "email": "test@example.com",
+  "password": "123456"
+}
+
+Step 2: Create a data reader class
+
+Create a file DataProvider.js
+
+import fs from 'fs';
+
+export class DataProvider {
+
+  static getTestData(filePath) {
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    return data;
+  }
+
+}
+
+Step 3: Use the data in your test
+
+import { test, expect } from '@playwright/test';
+import { DataProvider } from '../utils/DataProvider.js';
+
+test('login test', async ({ page }) => {
+
+  const data = DataProvider.getTestData('./testData.json');
+
+  await page.goto('https://example.com');
+
+  await page.fill('#email', data.email);
+  await page.fill('#password', data.password);
+
+});
+
 
 
 
